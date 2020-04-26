@@ -1,0 +1,6 @@
+#.gitignore
+
+135
+*.pyc
+.DS_Store
+.env
