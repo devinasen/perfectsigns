@@ -7,6 +7,7 @@ from dash.exceptions import PreventUpdate
 
 from trends import trends, graph
 from product import product, result
+from contribute import contribute
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL])
 server = app.server
@@ -22,6 +23,8 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/trends':
         return trends()
+    if pathname == "/survey":
+        return contribute()
     return product()
 
 @app.callback([Output('result', 'children'),
@@ -68,6 +71,7 @@ def update_graph(z1, z2, z3, z4, z5, z6):
     if (z1 is None or z2 is None or z3 is None or z4 is None or z5 is None or z6 is None):
         raise PreventUpdate
     return graph(z1, z2, z3, z4, z5, z6)
+
 
 if __name__ == '__main__':
     app.run_server(debug = True)
