@@ -14,7 +14,7 @@ jumbotron = dbc.Jumbotron(
                     "Have any feedback for us? Let us know by contacting devinasen@berkeley.edu.",
                     className="lead",
                 ),
-                html.Caption("A Varshinaastha Creation.")
+                html.P("A Varshinaastha Creation.")
             ],
             fluid=True,
         )
