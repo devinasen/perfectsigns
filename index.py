@@ -8,6 +8,7 @@ from dash.exceptions import PreventUpdate
 from trends import trends, graph
 from product import product, result
 from contribute import contribute
+from about import about
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL])
 server = app.server
@@ -25,6 +26,8 @@ def display_page(pathname):
         return trends()
     if pathname == "/survey":
         return contribute()
+    if pathname == "/about":
+        return about()
     return product()
 
 @app.callback([Output('result', 'children'),

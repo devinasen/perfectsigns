@@ -11,6 +11,7 @@ from dash.exceptions import PreventUpdate
 import plotly.express as px
 import plotly.graph_objects as go
 from nav import navbar
+from footer import footer
 
 df = pd.read_csv('Data Collection Survey (Responses).csv')
 og_df = df.copy()
@@ -331,7 +332,9 @@ def trends():
         header,
         dcc.Graph(figure = corr_matrix, id = 'corr'),
         graph_builder,
-        output
+        output,
+        html.Br(),
+        footer()
     ])
     return layout
 

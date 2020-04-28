@@ -9,7 +9,7 @@ def navbar():
             dbc.NavItem(dbc.NavLink("Contribute", href="/survey")),
             dbc.NavItem(dbc.NavLink("Trends", href="/trends"))
         ],
-        brand="Compatible",
+        brand="Perfect Signs",
         color="primary",
         dark=True,
         fluid = True

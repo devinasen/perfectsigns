@@ -10,6 +10,7 @@ import pandas as pd
 import joblib
 
 from nav import navbar
+from footer import footer
 nav = navbar()
 
 model_filename = 'zodiac.joblib.z'
@@ -178,7 +179,7 @@ survey = html.Div(children=[
             ]),
 
             dbc.FormGroup([
-                dbc.Label('Do you want your partner to folow the same religion as you?'),
+                dbc.Label('Do you want your partner to follow the same religion as you?'),
                 dbc.RadioItems(
                     options = [
                         {'label': 'Yes', 'value': 1},
@@ -288,7 +289,9 @@ def product():
         nav,
         html.Br(),
         survey,
-        res
+        res,
+        html.Br(),
+        footer(),
     ])
     return layout
 
