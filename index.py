@@ -75,6 +75,26 @@ def update_graph(z1, z2, z3, z4, z5, z6):
         raise PreventUpdate
     return graph(z1, z2, z3, z4, z5, z6)
 
+@app.callback(
+    Output("collapse-1", "is_open"),
+    [Input("creators-button", "n_clicks")],
+    [State("collapse-1", "is_open")],
+)
+def toggle_collapse1(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+@app.callback(
+    Output("collapse-2", "is_open"),
+    [Input("algorithm-button", "n_clicks")],
+    [State("collapse-2", "is_open")],
+)
+def toggle_collapse2(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
 
 if __name__ == '__main__':
     app.run_server(debug = True)

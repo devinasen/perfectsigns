@@ -13,63 +13,95 @@ content = html.Div([
     ]),
     dbc.Row([
         dbc.Col([
-            dbc.CardGroup([
-                dbc.Card([
-                    dbc.CardBody([
-                        html.H3(["Aastha Jha"]),
-                        html.P(["UC Berkeley Class of 2020"]),
-                        html.P(["Accenture Consulting"]),
-                        html.P(["Virgo"])
+            dbc.Button(
+                "Creators",
+                id="creators-button",
+                size = 'lg',
+                className="mr-1",
+                color="primary",
+            )],
+            width = {'offset':  5}
+        )],
+    ),
+
+    html.Br(),
+
+    dbc.Row([
+        dbc.Col([
+            dbc.Collapse(
+                    dbc.CardGroup([
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H3(["Aastha Jha"]),
+                                html.P(["UC Berkeley Class of 2020"]),
+                                html.P(["Accenture Consulting"]),
+                                html.P(["Virgo"])
+                            ]),
+                            ],
+                        color = "primary",
+                        outline = True
+                        ),
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H3(["Devina Sen"]),
+                                html.P(["UC Berkeley Class of 2020"]),
+                                html.P(["Not Accenture"]),
+                                html.P(["Virgo"])
+                            ]),
+                        ],
+                        color = 'primary',
+                        outline = True
+                        ),
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H3(["Varsha Sundar"]),
+                                html.P(["UC Berkeley Class of 2020"]),
+                                html.P(["Accenture Digital"]),
+                                html.P(["Scorpio"])
+                            ]),
+                        ],
+                        color = 'primary',
+                        outline = True
+                        )
                     ]),
-                    ],
-                color = "primary",
-                outline = True
-                ),
-                dbc.Card([
-                    dbc.CardBody([
-                        html.H3(["Devina Sen"]),
-                        html.P(["UC Berkeley Class of 2020"]),
-                        html.P(["Not Accenture"]),
-                        html.P(["Virgo"])
-                    ]),
-                ],
-                color = 'primary',
-                outline = True
-                ),
-                dbc.Card([
-                    dbc.CardBody([
-                        html.H3(["Varsha Sundar"]),
-                        html.P(["UC Berkeley Class of 2020"]),
-                        html.P(["Accenture Digital"]),
-                        html.P(["Scorpio"])
-                    ]),
-                ],
-                color = 'primary',
-                outline = True
-                )
-            ])
-        ], width = {'size': 10, 'offset': 1})
+                    id="collapse-1",
+            )
+        ], width = 9)
+    ], justify = "center"),
+
+    html.Br(),
+
+    dbc.Row([
+        dbc.Col([
+            dbc.Button(
+                "Algorithm",
+                id="algorithm-button",
+                size = 'lg',
+                className="mr-1",
+                color="primary",
+            )
+        ], width = {'offset': 5})
     ]),
 
     html.Br(),
 
     dbc.Row([
         dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    html.H2("The Algorithm")
-                ]),
-                dbc.CardBody([
-                    html.P("This machine learning model performs logistic regression on "
-                    "predominantly categorical user submitted data to determine the zodiac sign and preferred "
-                    "qualities of a user's ideal match. With more data and frequent testing, we aim to "
-                    "redefine astrological pairings for the modern day match seeker and help them "
-                    "recognize the Perfect Signs. ")
-                ])
-            ], color = "info", inverse = True
+            dbc.Collapse(
+                dbc.Card([
+                    dbc.CardBody([
+                        html.P("This machine learning model utilizes decision tree classification and performs logistic regression on "
+                        "predominantly categorical user submitted data to determine the zodiac sign and preferred "
+                        "qualities of a user's ideal match respectively. With more data and frequent testing, we aim to "
+                        "redefine astrological pairings for the modern day match seeker and help them "
+                        "recognize the Perfect Signs. ")
+                    ])
+                ], color = "secondary", inverse = True
+                ),
+                id = "collapse-2"
             )
-        ], width = {'size': 8, 'offset': 2})
-    ], align = "center")
+        ], width = 9)
+    ], justify = "center")
 ])
 
 

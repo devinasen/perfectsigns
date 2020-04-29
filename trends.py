@@ -330,7 +330,11 @@ def trends():
     layout = html.Div([
         navbar(),
         header,
-        dcc.Graph(figure = corr_matrix, id = 'corr'),
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(figure = corr_matrix, id = 'corr')
+            ])
+        ], justify = "center"),
         graph_builder,
         output,
         html.Br(),
