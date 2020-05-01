@@ -39,76 +39,75 @@ char_response_dict = {
     'p_staying_in':  "Your ideal partner may be someone who likes to stay in, but that won't stop you from finding each other soon."
 }
 
+zod_desc_dict = {
+    'Aquarius': "Your top match is an Aquarius! You've got yourself a free-spirited intellectual, eager to change the world for the better. They love to get ahead in life and are naturally-driven. Sometimes their energy may come off too strong or overbearing, but that's because they love their independence. It may take time to build a relationship with an Aquarius, but once they've gained your trust, they'll never let you go. ",
+    'Pisces': "Your ideal partner is a Pisces — a deep, loving water sign. Pisces value openness and honesty in the relationship. They are not afraid to show their emotions or speak their mind. At times, you may find yourself to be more emotionally distant than your partner but to rekindle your love, simply just show them your romantic, compassionate side. They are idealistic, often imaginitive and love to see the best in everything.",
+    'Aries': "You've got Aries as your top match! This fire sign is fun, outgoing, and loves to be the leader.  They are bold, adventurous, and competitive. Aries definitely can be hot-headed at times, but don't let that get in the way. At the end of the day, they will proudly love you, make you feel secure, and will stand up for you no matter what.",
+    'Taurus': "You've got a Taurus! They are tenacious, hard-working, grounded individuals. They're strong-willed and are ready to make a difference in the world. They love the great outdoors but sometimes they need some time to themselves and might prefer to just stay home. You may find some materialistic, stubborn tendencies but they promise a relationship filled with love and stability. You can rely on them and seek inspiration in their perserverence and talents.",
+    'Gemini': "Your top match is a Gemini! Gemini are fun, dynamic, sometimes intense lovers. They love adventure but also are cautious in their actions. They value their independence and aren't afraid to take the reins in the relationship. Geminis are the twins, so you may notice duality in their personality but that's part of the fun and dynamism. They are not afraid to express their feelings so be bold, open, and flirty too.",
+    'Cancer': "Your ideal match is a Cancer! Hold on to a Cancer because they are fun, sensitive, loyal partners. They are water signs and are ready to show you their romantic side. They are easy to talk to so you've got yourself a great friend too. You may find it difficult for them to trust you at first, but once they do, you're on your way to a blossoming relationship. ",
+    'Leo': "You've got yourself a Leo! Here's to a relationship filled with fun, fire, and passion! Leos are playful, social butterfies who love to have a good time. These lions lead busy, sometimes even independent, lives so it might be hard to keep up with them once in a while. They tend to hide their emotional side to them but that doesn't mean they don't have a special place in their heart for you! ",
+    'Virgo': "Your ideal partner is a Virgo! Virgos are very observant and will pay attention to the small things. They are rational and grounded so they may not outwardly express their emotions but don't misunderstand that. They are equally loyal, loving and make strong partners. They prefer organization and can be critical so don't be caught off guard by their calenders, planning, and schedules.",
+    'Libra': "You're ideal partner is a Libra! Libras are talented, free-willed individuals who love to display their creative side to them. While they are open and honest, Libras are non-confrontation and could hold grudges if you nudge them the wrong way. Your partner will have a charming personality and will lead a balanced life. They are your 'chaotic-good' lovers who are open and ready to try new experiences.",
+    'Scorpio': "Your ideal match is a Scorpio! You've got yourself a powerful, passionate, and fierce individual. Scorpios are natural leaders who aren't afraid to express their mind. They are confident and truly believe if there is a will, there is a way. Help slow them down, as they can be aggressive, sometimes even jealous. You may not see their emotional side upfront, but deep down, this water sign will give you their world.",
+    'Sagittarius': "Your top sign is a Sagittarius! They are curious, energetic people that truly like to live life unconventionally. Sagittarius love their freedom so never get in their way and appreciate space between you two. You may find that they love to be right and are impatient. Sagittarius are ultimately warm, honest individuals that will always look out for you and help you grow.",
+    'Capricorn': "You've got a Capricorn! This Earth sign is practical, ambitious, career-driven and treasure their values. They work hard so they can show off their best self to crowds. They have materialistic, conceited tendencies but they appreciate you keeping them grounded. They are guided by realistic, disciplined approaches to life so nothing will ever cloud their judgement once they set their mind to something. Success and abundance will be a guiding principle in your relationship long-term.",
+}
+
 def zod_predictions(resp):
     text = "Your most compatible sign is: "
     zod = model_zodiac.predict(resp).tolist()[0]
     ind = zod.index(1)
     comp_sign = zodiac_signs[ind]
     text = text + comp_sign + ". "
-    return html.H5(text, className="card-title")
+    desc = zod_desc_dict[comp_sign]
+    return html.H5(text, className="card-title"), html.P(desc)
 
 def char_predictions(resp):
   text = ""
+  predictions = {}
   for p in chars_model_dictionary:
     mod = chars_model_dictionary[p]
     pred = mod.predict(resp)[0]
     if pred >= 0.5:
-      text += char_response_dict[p] + ". "
+      predictions[p] = pred
+  if 'p_extrovert' in predictions and 'p_introvert' in predictions:
+    if predictions['p_extrovert'] >= predictions['p_introvert']:
+      del predictions['p_introvert']
+    else:
+      del predictions['p_extrovert']
+  if 'p_staying_in' in predictions.keys():
+    if 'p_going_out' in predictions.keys():
+      if predictions['p_going_out'] >= predictions['p_staying_in']:
+        del predictions['p_staying_in']
+      else:
+        del predictions['p_going_out']
+  for key in predictions.keys():
+    text += char_response_dict[key] + ". "
   return html.P(
                 text,
                 className="card-text",
             )
 
 def total_predictions(resp):
-  a = zod_predictions(resp)
-  b = char_predictions(resp)
-  return dbc.CardBody([a, b])
+  a, b = zod_predictions(resp)
+  c = char_predictions(resp)
+  return dbc.CardBody([a, b, c])
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 #app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-'''q1 = dbc.FormGroup(
-    [
-        dbc.Label('Name?'),
-        dbc.Input(id="name", placeholder = 'Type here', type = 'text'),
-    ]
-)
-
-q2 = dbc.FormGroup(
-    [
-        dbc.Label("What's your Zodiac sign?"),
-        dcc.Dropdown(
-            options=[
-                {'label': 'Aquarius (January 20 - February 18)', 'value': 'Aquarius'},
-                {'label': 'Pisces (February 19 - March 20)', 'value': 'Pisces'},
-                {'label': 'Aries (March 21 - April 19)', 'value': 'Aries'},
-                {'label': 'Taurus (April 20 - May 20)', 'value': 'Taurus'},
-                {'label': 'Gemini (May 21 - June 20)', 'value': 'Gemini'},
-                {'label': 'Cancer (June 21 - July 22)', 'value': 'Cancer'},
-                {'label': 'Leo (July 23 - August 22)', 'value': 'Leo'},
-                {'label': 'Virgo (August 23 - September 22)', 'value': 'Virgo'},
-                {'label': 'Libra (September 23 - October 22)', 'value': 'Libra'},
-                {'label': 'Scorpio (October 23 - November 21)', 'value': 'Scorpio'},
-                {'label': 'Sagittarius (November 22 - December 21)', 'value': 'Sagittarius'},
-                {'label': 'Capricorn (December 22 - January 19)', 'value': 'Capricorn'},
-            ],
-            placeholder = 'Select...'
-        ),
-    ]
-)
-
-survey = dbc.Form([q1, q2])
-'''
 survey = html.Div(children=[
         dbc.Row(
             dbc.Col(html.H1(children='Your Ideal Zodiac Partner'), width = {'offset': 2})
         ),
 
         dbc.Row(
-            dbc.Col(html.Div(children='''Take the quiz and find out who's the one for you.'''),
+            dbc.Col(html.Div(children='''Take this quiz and find out about your ideal life partner.'''),
                 width = {'offset': 2})
         ),
 
+        html.Br(),
         html.Br(),
 
         dbc.Row([dbc.Col([
