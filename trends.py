@@ -208,16 +208,95 @@ df['p_education'].replace(to_replace={'None':0,
 
 df['political'].replace(to_replace={'Yes':1, 'No':0, 'Maybe':2}, inplace= True)
 
-corr = df.corr()
-corr2 = pd.melt(corr.reset_index(), id_vars='index')
+#CREATING PARTNER COLUMNS
+cols = ['smoke', 'drink', 'drug', 'premarital_sex','kids', 'calm', 'rational', 'emotional',
+        'stubborn', 'adventurous', 'creative', 'analytical', 'introvert', 'extrovert',
+        'going_out', 'staying_in']
+
+for col in cols:
+    pcol = []
+    vals = df[col]
+    for val in vals:
+        if val == 0:
+            pcol = np.append(pcol, 0)
+        if val == 1:
+            pcol = np.append(pcol, 1)
+        if val == 2:
+            pcol = np.append(pcol, 0)
+        if val == 3:
+            pcol = np.append(pcol, 1)
+    pref = {2: 1, 3: 0}
+    df[col].replace(to_replace=pref, inplace= True)
+    df['p_' + col] = pcol
+
+
+#SIMPLE CORRELATION MATRIX
+chars = ['age', 'gender', 'education',
+       'smoke', 'drink', 'drug', 'premarital_sex','kids', 'calm', 'rational', 'emotional', 'stubborn', 'adventurous',
+       'creative', 'analytical', 'introvert', 'extrovert', 'going_out',
+       'staying_in']
+p_chars = ['p_age', 'p_gender', 'p_education',
+       'p_smoke', 'p_drink', 'p_drug', 'p_premarital_sex', 'p_kids', 'p_calm', 'p_rational', 'p_emotional',
+       'p_stubborn', 'p_adventurous', 'p_creative', 'p_analytical','p_introvert', 'p_extrovert', 'p_going_out', 'p_staying_in']
+
+char_df = df[chars]
+p_char_df = df[p_chars]
+p_char_df.rename(columns = lambda x: x[2:], inplace = True)
+
+simple_corr = char_df.corrwith(p_char_df)
+
+simple_fig = go.Figure(data=go.Heatmap(z=simple_corr, x = chars, y=chars))
+simple_fig.update_layout(width = 1000, height = 1000,
+                  title = {'text': "Simple Respondent vs Partner Characteristics", 'xanchor': 'center','x':0.5,})
+simple_fig.update_xaxes(title_text='Respondent')
+simple_fig.update_yaxes(title_text='Partner')
+
+
+# CHARACTERISTIC MATRIX
+chars_df = df.drop(columns = ['happy', 'compatible', 'ethnicity', 'religion', 'political'])
+char_corr = chars_df.corr()
+
+corr2 = pd.melt(char_corr.reset_index(), id_vars='index')
 corr2.columns = ['x', 'y', 'value']
 
 x_labels = [v for v in sorted(corr2['x'].unique())]
 y_labels = [v for v in sorted(corr2['y'].unique())]
 
-corr_matrix = go.Figure(data=go.Heatmap(z=corr, x = x_labels, y= y_labels))
-corr_matrix.update_layout(width = 1000, height = 1000,
-                  title = {'text': "Characteristics Correlation Matrix", 'xanchor': 'center','x':0.5,})
+char_fig = go.Figure(data=go.Heatmap(z=char_corr, x = x_labels, y = y_labels))
+char_fig.update_layout(width = 1000, height = 1000,
+                  title = {'text': "Complete Characteristics Correlation Matrix", 'xanchor': 'center','x':0.5,})
+
+# ZODIAC MATRIX
+zod_corr = pd.pivot_table(df.iloc[:,0:2], index = 'zodiac', columns = ['p_zodiac'], aggfunc = len, fill_value = 0)
+zod_corr = zod_corr / len(df['zodiac'])
+zod_corr
+
+x_labels = [v for v in sorted(df['zodiac'].unique())]
+y_labels = [v for v in sorted(df['zodiac'].unique())]
+
+zod_fig = go.Figure(data=go.Heatmap(z=zod_corr, x = x_labels, y= y_labels))
+zod_fig.update_layout(width = 1200, height = 1000,
+                  title = {'text': "Zodiac Correlation Matrix", 'xanchor': 'center','x':0.5,})
+zod_fig.update_xaxes(title_text='Partner')
+zod_fig.update_yaxes(title_text='Respondent')
+
+
+heatmaps = html.Div([
+    dbc.Tabs(
+        [
+            dbc.Tab(dbc.Card(dbc.CardBody([html.P("Select a graph from the options above for some nifty visuals.", className = "lead"),
+                                            html.P("Hover over each point to see its X and Y labels and the correlation value between them. ", className = "lead")])),
+                label = 'Heat Maps', disabled = True),
+            dbc.Tab(dbc.Card(dbc.CardBody([dcc.Graph(figure = simple_fig, id = 'simple_corr')])),
+                label="Simple Characteristic Correlations"),
+            dbc.Tab(dbc.Card(dbc.CardBody([dcc.Graph(figure = char_fig, id = 'char_corr')])),
+                label="Characteristic Correlation Matrix"),
+            dbc.Tab(dbc.Card(dbc.CardBody([dcc.Graph(figure = zod_fig, id = 'zod_corr')])),
+                label = "Zodiac Correlations")
+        ]
+    )
+])
+
 
 def graph(zod1, zod2, xaxis, yaxis, size, color):
     mask1 = [zod in zod1 for zod in og_df['Zodiac']]
@@ -244,6 +323,9 @@ header = html.Div([
 
 graph_builder = html.Div([
     html.Br(),
+    dbc.Container([
+        html.H2("Build a Graph"),
+    ]),
     dbc.Container([
         dbc.Label('Select one or more primary signs', html_for = 'dropdown'),
         dcc.Dropdown(
@@ -330,11 +412,8 @@ def trends():
     layout = html.Div([
         navbar(),
         header,
-        dbc.Row([
-            dbc.Col([
-                dcc.Graph(figure = corr_matrix, id = 'corr')
-            ])
-        ], justify = "center"),
+        heatmaps,
+        html.Br(),
         graph_builder,
         output,
         html.Br(),
@@ -362,5 +441,12 @@ app.layout = trends()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+    dbc.Row([
+        dbc.Col([
+            dcc.Graph(figure = corr_matrix, id = 'corr')
+        ])
+    ], justify = "center"),
 
 '''
