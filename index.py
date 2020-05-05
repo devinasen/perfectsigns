@@ -10,6 +10,8 @@ from product import product, result
 from contribute import contribute
 from about import about
 
+'''This is our control center from which we process all user input and call other pages.'''
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL])
 server = app.server
 app.config.suppress_callback_exceptions = True
@@ -19,6 +21,7 @@ app.layout = html.Div([
     html.Div(id = 'page-content')
 ])
 
+#Which page to display
 @app.callback(Output('page-content', 'children'),
             [Input('url', 'pathname')])
 def display_page(pathname):
@@ -30,6 +33,7 @@ def display_page(pathname):
         return about()
     return product()
 
+#takes in survey input and returns output from result method in product.py
 @app.callback([Output('result', 'children'),
     Output('error', 'children')],
 
@@ -59,7 +63,7 @@ def update_result(click, n, q1, q2, q3, q4, q5, q6, q7, q8, q9):
 
     return result(n, q1, q2, q3, q4, q5, q6, q7, q8, q9)
 
-
+#takes user input of graphbuilder section and returns graph using method in trends.py
 @app.callback(
     Output('graph_output', 'figure'), [
     Input('zodiac-1', 'value'),
@@ -75,6 +79,7 @@ def update_graph(z1, z2, z3, z4, z5, z6):
         raise PreventUpdate
     return graph(z1, z2, z3, z4, z5, z6)
 
+#opens and closes creator cards in about.py
 @app.callback(
     Output("collapse-1", "is_open"),
     [Input("creators-button", "n_clicks")],
@@ -85,6 +90,7 @@ def toggle_collapse1(n, is_open):
         return not is_open
     return is_open
 
+#opens and closes algorthim explanation card in about.py
 @app.callback(
     Output("collapse-2", "is_open"),
     [Input("algorithm-button", "n_clicks")],
@@ -95,6 +101,6 @@ def toggle_collapse2(n, is_open):
         return not is_open
     return is_open
 
-
+#run the app - Whoooooo!
 if __name__ == '__main__':
     app.run_server(debug = True)

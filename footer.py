@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 
-
+#footer content
 jumbotron = dbc.Jumbotron(
     [
         dbc.Container(
@@ -22,7 +22,7 @@ jumbotron = dbc.Jumbotron(
     fluid=True,
 )
 
-
+#building footer
 def footer():
   layout = html.Div([
       html.Br(),

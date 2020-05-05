@@ -13,6 +13,10 @@ import plotly.graph_objects as go
 from nav import navbar
 from footer import footer
 
+
+#reading responses
+#df is for majority binary data, used in heat maps
+#og_df has readable column names, used for scatterplot
 df = pd.read_csv('Data Collection Survey (Responses).csv')
 og_df = df.copy()
 
@@ -53,15 +57,15 @@ og_df.rename(columns={'Your Zodiac': 'Zodiac',
 df.rename(columns={'Your Zodiac': 'zodiac',
                    "Your Ex/Partner's Zodiac": "p_zodiac",
                    "Age Range": "age",
-                   "Ex/Partner's Age Range": "p_age",
+                   "Ex/Partner's Age Range": "age (partner)",
                    "Your Gender?": "gender",
-                   "Your ex/partner's Gender?": "p_gender",
+                   "Your ex/partner's Gender?": "gender (partner)",
                    "On a scale from 1-10, how happy were/are you in your relationship?": "happy",
                    "On a scale from 1-10, how compatible did/do you feel you both are?": "compatible",
                    "Income": "income",
                    "Are you and your ex/partner the same ethnicity?": "ethnicity",
                    "Your highest level of education? (Or in progress)": "education",
-                   "Your ex/partner's highest level of education? (Or in progress)": "p_education",
+                   "Your ex/partner's highest level of education? (Or in progress)": "education (partner)",
                    "Did/do you and your partner generally hold the same political views?": "political",
                    "Did/do you and your partner hold the same religious views?":"religion",
                    "Preferences (select for you and your ex/partner if yes) [Smoke?]": "smoke",
@@ -149,7 +153,7 @@ graph_options = ["Respondent's Age", "Partner's Age",
 
 numeric_options = ['Happiness', 'Compatibility']
 
-## CORRELATION Matrix
+## CORRELATION MATRIX
 ## transforming categorical variables
 
 # BACKGROUND
@@ -176,10 +180,10 @@ df['going_out'].replace(to_replace=pref_r, inplace= True)
 df['staying_in'].replace(to_replace=pref_r, inplace= True)
 
 df['age'].replace(to_replace= {'<20': 0, '20-29': 1, "30-49": 2, "30-50": 2, "50+":3}, inplace= True)
-df['p_age'].replace(to_replace= {'<20': 0, '20-29': 1, "30-49": 2, "30-50": 2, "50+":3}, inplace= True)
+df['age (partner)'].replace(to_replace= {'<20': 0, '20-29': 1, "30-49": 2, "30-50": 2, "50+":3}, inplace= True)
 
 df['gender'].replace(to_replace= {'Female':0, 'Male':1}, inplace= True)
-df['p_gender'].replace(to_replace={'Female':0, 'Male':1}, inplace= True)
+df['gender (partner)'].replace(to_replace={'Female':0, 'Male':1}, inplace= True)
 df['income'].replace(to_replace={'Neither of us have income': 0,
                                 'My ex/partner has no income': 1,
                                 'I have no income': 2,
@@ -198,7 +202,7 @@ df['education'].replace(to_replace={'None':0,
                                    'PhD': 5,
                                    'Other professional degree': 6}, inplace= True)
 
-df['p_education'].replace(to_replace={'None':0,
+df['education (partner)'].replace(to_replace={'None':0,
                                     'High School':1,
                                     'Associates': 2,
                                    'Bachelors': 3,
@@ -227,7 +231,7 @@ for col in cols:
             pcol = np.append(pcol, 1)
     pref = {2: 1, 3: 0}
     df[col].replace(to_replace=pref, inplace= True)
-    df['p_' + col] = pcol
+    df[col + ' (partner)'] = pcol
 
 
 #SIMPLE CORRELATION MATRIX
@@ -235,13 +239,13 @@ chars = ['age', 'gender', 'education',
        'smoke', 'drink', 'drug', 'premarital_sex','kids', 'calm', 'rational', 'emotional', 'stubborn', 'adventurous',
        'creative', 'analytical', 'introvert', 'extrovert', 'going_out',
        'staying_in']
-p_chars = ['p_age', 'p_gender', 'p_education',
-       'p_smoke', 'p_drink', 'p_drug', 'p_premarital_sex', 'p_kids', 'p_calm', 'p_rational', 'p_emotional',
-       'p_stubborn', 'p_adventurous', 'p_creative', 'p_analytical','p_introvert', 'p_extrovert', 'p_going_out', 'p_staying_in']
+p_chars = ['age (partner)', 'gender (partner)', 'education (partner)',
+       'smoke (partner)', 'drink (partner)', 'drug (partner)', 'premarital_sex (partner)', 'kids (partner)', 'calm (partner)', 'rational (partner)', 'emotional (partner)',
+       'stubborn (partner)', 'adventurous (partner)', 'creative (partner)', 'analytical (partner)','introvert (partner)', 'extrovert (partner)', 'going_out (partner)', 'staying_in (partner)']
 
 char_df = df[chars]
 p_char_df = df[p_chars]
-p_char_df.rename(columns = lambda x: x[2:], inplace = True)
+p_char_df.rename(columns = lambda x: x[:len(x)-10], inplace = True)
 
 simple_corr = char_df.corrwith(p_char_df)
 
@@ -259,8 +263,8 @@ char_corr = chars_df.corr()
 corr2 = pd.melt(char_corr.reset_index(), id_vars='index')
 corr2.columns = ['x', 'y', 'value']
 
-x_labels = [v for v in sorted(corr2['x'].unique())]
-y_labels = [v for v in sorted(corr2['y'].unique())]
+x_labels = [v for v in (corr2['x'].unique())]
+y_labels = [v for v in (corr2['y'].unique())]
 
 char_fig = go.Figure(data=go.Heatmap(z=char_corr, x = x_labels, y = y_labels))
 char_fig.update_layout(width = 1000, height = 1000,
@@ -282,6 +286,7 @@ zod_fig.update_xaxes(title_text='Partner')
 zod_fig.update_yaxes(title_text='Respondent')
 
 
+#Creating tabs with each plotly figure inside
 heatmaps = html.Div([
     dbc.Tabs(
         [
@@ -298,20 +303,22 @@ heatmaps = html.Div([
     )
 ])
 
-
+#returns graph with chosen zodiac filters, and axes and classification variables
 def graph(zod1, zod2, xaxis, yaxis, size, color):
     mask1 = [zod in zod1 for zod in og_df['Zodiac']]
     temp = og_df[mask1]
     mask2 = [zod in zod2 for zod in temp["Partner's Zodiac"]]
     dff = temp[mask2]
     fig = px.scatter(dff, x = xaxis, y = yaxis, size = size, color = color, opacity = 0.5)
-    fig.update_layout(title = {'text': u'{} v. {}'.format(xaxis, yaxis), 'x': 0.5}, height = 750)
+    fig.update_layout(title = {'text': u'{} v. {}'.format(yaxis, xaxis), 'x': 0.5}, height = 750)
     return fig
 
+#graph output (dcc)
 output = html.Div([
     dcc.Graph(id = 'graph_output')
 ])
 
+#page header
 header = html.Div([
     html.Br(),
     dbc.Jumbotron([
@@ -322,6 +329,7 @@ header = html.Div([
     html.Br()
 ])
 
+#graph builder user input section
 graph_builder = html.Div([
     html.Br(),
     dbc.Container([
@@ -409,6 +417,7 @@ graph_builder = html.Div([
     html.Br()
 ])
 
+#building page
 def trends():
     layout = html.Div([
         navbar(),
@@ -421,33 +430,3 @@ def trends():
         footer()
     ])
     return layout
-
-'''
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL])
-
-app.layout = trends()
-
-@app.callback(
-    Output('graph_output', 'figure'), [
-    Input('zodiac-1', 'value'),
-    Input('zodiac-2', 'value'),
-    Input('x', 'value'),
-    Input('y', 'value'),
-    Input('size', 'value'),
-    Input('color', 'value')
-    ]
-)
-
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
-
-
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(figure = corr_matrix, id = 'corr')
-        ])
-    ], justify = "center"),
-
-'''

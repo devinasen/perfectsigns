@@ -6,6 +6,8 @@ import dash_bootstrap_components as dbc
 from nav import navbar
 from footer import footer
 
+'''This page's content includes a header and two buttons for showing the "creator" cards and
+showing a short explanation of the model used. The navigation bar and footer are added separately'''
 
 content = html.Div([
     dbc.Jumbotron([
@@ -105,7 +107,7 @@ content = html.Div([
 ])
 
 
-
+#building page
 def about():
     layout = html.Div([
         navbar(),

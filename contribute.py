@@ -6,7 +6,9 @@ import dash_bootstrap_components as dbc
 from nav import navbar
 from footer import footer
 
+'''This page includes a button linking the user to our data collection survey for training the model.'''
 
+#page content
 header = html.Div([
   dbc.Row([
     dbc.Col([
@@ -28,7 +30,7 @@ header = html.Div([
 
 
 
-
+#building page
 def contribute():
   layout = html.Div([
     navbar(),

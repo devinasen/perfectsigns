@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 
-
+#Creating navigation bar for each webpage
 def navbar():
     nav = dbc.NavbarSimple(
         children=[

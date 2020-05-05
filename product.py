@@ -11,8 +11,11 @@ import joblib
 
 from nav import navbar
 from footer import footer
+
+#navigation
 nav = navbar()
 
+#loading models and response text
 model_filename = 'zodiac.joblib.z'
 model_zodiac = joblib.load(model_filename)
 chars_model_dictionary = joblib.load('char_dict.joblib.z')
@@ -54,6 +57,7 @@ zod_desc_dict = {
     'Capricorn': "You've got a Capricorn! This Earth sign is practical, ambitious, career-driven and treasure their values. They work hard so they can show off their best self to crowds. They have materialistic, conceited tendencies but they appreciate you keeping them grounded. They are guided by realistic, disciplined approaches to life so nothing will ever cloud their judgement once they set their mind to something. Success and abundance will be a guiding principle in your relationship long-term.",
 }
 
+#running models on user submitted data (prediction methods)
 def zod_predictions(resp):
     text = "Your most compatible sign is: "
     zod = model_zodiac.predict(resp).tolist()[0]
@@ -89,14 +93,13 @@ def char_predictions(resp):
                 className="card-text",
             )
 
+#returns results text
 def total_predictions(resp):
   a, b = zod_predictions(resp)
   c = char_predictions(resp)
   return dbc.CardBody([a, b, c])
 
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
+#creating survey
 survey = html.Div(children=[
         dbc.Row(
             dbc.Col(html.H1(children='Your Ideal Zodiac Partner'), width = {'offset': 2})
@@ -272,7 +275,7 @@ survey = html.Div(children=[
         ])
     ])
 
-
+# Results Pop Up
 res = html.Div([
         html.Br(),
         dbc.Row(
@@ -283,6 +286,7 @@ res = html.Div([
             justify = 'center',
         )])
 
+#building page
 def product():
     layout = html.Div([
         nav,
@@ -294,10 +298,10 @@ def product():
     ])
     return layout
 
-
+#taking in survey data and running prediction methods to generate results
 def result(name, q1, q2, q3, q4, q5, q6, q7, q8, q9):
 
-    #one hot encoding
+    #one hot encoding characteristics
     features = ['smoke', 'drink', 'drugs', 'sex', 'kids',
         'Calm', 'Rational', 'Emotional', 'Stubborn', 'Adventurous',
         'Creative', 'Analytical', 'Introvert', 'Extrovert', 'Out', 'In']
@@ -313,6 +317,7 @@ def result(name, q1, q2, q3, q4, q5, q6, q7, q8, q9):
         else:
             values.append(0)
 
+    #one hot encoding zodiac sign
     zodiac = []
     for sign in zodiac_signs:
         if sign == q1:
@@ -320,6 +325,7 @@ def result(name, q1, q2, q3, q4, q5, q6, q7, q8, q9):
         else:
             zodiac.append(0)
 
+    #one hot encoding age category via dictionary
     ages = {'<20': [0, 0, 0, 0, 1],
     '20-29': [1, 0, 0, 0, 0],
     '30-50': [0, 0, 1, 0, 0],
@@ -327,10 +333,12 @@ def result(name, q1, q2, q3, q4, q5, q6, q7, q8, q9):
 
     age = ages[q2]
 
+    #one hot encoding education category via dictionary
     education = {'ba': [1, 0, 0, 0, 0], 'hs': [0, 1, 0, 0, 0],
     'm': [0, 0, 1, 0, 0], 'phd': [0, 0, 0, 0, 1], 'p': [0, 0, 0, 1, 0]}
     ed = education[q7]
 
+    #creating 1 row dataframe of inputs for models
     input = pd.DataFrame({'gender': [q3], 'ethnicity': [q4], 'political': [q6],
     'religion': q5, 'r_smoke': values[0], 'r_drink': values[1],
        'r_drug': values[2], 'r_premarital_sex': values[3], 'r_kids': values[4],
@@ -355,34 +363,3 @@ def result(name, q1, q2, q3, q4, q5, q6, q7, q8, q9):
        'education_Other professional degree': ed[3], 'education_PhD': ed[4]})
 
     return total_predictions(input), ''
-
-'''
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL])
-
-app.layout = product()
-
-
-@app.callback([Output('result', 'children'),
-    Output('error', 'children')],
-
-    [Input('user-survey', 'n_clicks')],
-
-    [State('name', 'value'),
-    State('q1', 'value'),
-    State('q2', 'value'),
-    State('q3', 'value'),
-    State('q4', 'value'),
-    State('q5', 'value'),
-    State('q6', 'value'),
-    State('q7', 'value'),
-    State('q8', 'value'),
-    State('q9', 'value'),
-    ]
-)
-
-
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
-'''
