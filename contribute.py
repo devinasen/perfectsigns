@@ -18,7 +18,7 @@ header = html.Div([
               html.P("Whether you're happily in love or gladly single, we want to hear your story!", className="card-text"),
               html.P("Fill out this 5 minute survey about your current or past relationships, then head over to our Trends page and see how you compare to the rest of our responders.", className="card-text"),
               dbc.Button("Survey", id = 'survey_link', size="lg", color = 'primary', className="mr-1",
-                  external_link = True, href = "https://drive.google.com/open?id=1gz70dyN4AX6n8BMfkiLoM5tFzztpDLQlPNNCvFcAtdY")
+                  external_link = True, href = "https://forms.gle/x78HefSqciTw8h3d8")
                   ]),
             color = "secondary",
             inverse = True
