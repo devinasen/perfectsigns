@@ -24,7 +24,7 @@ char_response_dict = {
     'p_smoke' : "Your ideal partner may enjoy a quick smoke",
     'p_drink' : "Your ideal partner probably indulges in a drink or two",
     'p_drug' : "They are someone who likely enjoys drugs",
-    'p_premarital_sex' : "Premarital sex doesn't scare them.",
+    'p_premarital_sex' : "Premarital sex doesn't scare them",
     'p_kids' : "They may look forward to having kids in the future",
     'p_calm' : "Your ideal partner is someone who makes you feel calm",
     'p_rational' : "Your ideal partner will be rational",

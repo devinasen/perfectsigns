@@ -267,14 +267,15 @@ char_fig.update_layout(width = 1000, height = 1000,
                   title = {'text': "Complete Characteristics Correlation Matrix", 'xanchor': 'center','x':0.5,})
 
 # ZODIAC MATRIX
-zod_corr = pd.pivot_table(df.iloc[:,0:2], index = 'zodiac', columns = ['p_zodiac'], aggfunc = len, fill_value = 0)
+zod = df.iloc[:,0:2]
+zod_corr = pd.pivot_table(zod, index = 'zodiac', columns = ['p_zodiac'], aggfunc = len, fill_value = 0)
 zod_corr = zod_corr / len(df['zodiac'])
 zod_corr
 
 x_labels = [v for v in sorted(df['zodiac'].unique())]
 y_labels = [v for v in sorted(df['zodiac'].unique())]
 
-zod_fig = go.Figure(data=go.Heatmap(z=zod_corr, x = x_labels, y= y_labels))
+zod_fig = go.Figure(data=go.Heatmap(z= zod_corr, x = x_labels, y= y_labels))
 zod_fig.update_layout(width = 1200, height = 1000,
                   title = {'text': "Zodiac Correlation Matrix", 'xanchor': 'center','x':0.5,})
 zod_fig.update_xaxes(title_text='Partner')
