@@ -8,4 +8,10 @@ To run the application locally, you should only need to install python, dash, da
 
 Run the application from the [index.py](https://github.com/devinasen/perfectsigns/blob/master/UI/index.py) file found in the UI folder using the command "python index.py" in your terminal. *Note: It is important to run the file from the UI directory due to relative pathing in the code.*
 
-Majority of the UI code is adapted from the [dash tutorial](https://dash.plotly.com/) and [dash_bootstrap_components documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/) and the application structure follows the design found in [this article](https://towardsdatascience.com/create-a-multipage-dash-application-eceac464de91) or this [GitHub repo](https://github.com/joelsewhere/dash_app) by Joel Collins (thanks, Joel <3).
+Majority of the UI code is adapted from the [dash tutorial](https://dash.plotly.com/) and [dash_bootstrap_components documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/) and the application structure follows the design found in [this article](https://towardsdatascience.com/create-a-multipage-dash-application-eceac464de91) or this [GitHub repo](https://github.com/joelsewhere/dash_app) by Joel Collins. 
+
+Libraries used in developing our model code are listed below: 
+- https://github.com/scikit-learn/scikit-learn
+- https://github.com/matplotlib/matplotlib
+- https://github.com/pandas-dev/pandas
+- https://github.com/mwaskom/seaborn
