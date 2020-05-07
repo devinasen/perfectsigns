@@ -2,7 +2,7 @@
 ## A project developed for Data-X at Berkeley
 ### Authors: Aastha Jha, Devina Sen, Varsha Sundar
 
-Perfect Signs uses Decision Tree Classification and Logistic Regressions to predict ideal Zodiac partners for a user based on their background, lifestyle preferences, and personality traits. Check it out at [perfectsigns.herokuapp.com](perfectsigns.herokuapp.com).
+Perfect Signs uses Decision Tree Classification and Logistic Regressions to predict ideal Zodiac partners for a user based on their background, lifestyle preferences, and personality traits. Check it out at [perfectsigns.herokuapp.com](perfectsigns.herokuapp.com)
 
 To run the application locally, you should only need to install python, dash, dash_bootstrap_components, pandas, numpy, and joblib. Refer to the [requirements.txt](https://github.com/devinasen/perfectsigns/blob/master/requirements.txt) file for a full list of the necessary packages required to run all components of the project.
 
